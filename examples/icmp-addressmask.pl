@@ -10,7 +10,7 @@ use Net::Frame::ICMPv4::AddressMask;
 my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
 
 my $i  = Net::Frame::ICMPv4->new(type => NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST);
-my $i2 = Net::Frame::ICMPv4::AddressMask->new(data => 'test');
+my $i2 = Net::Frame::ICMPv4::AddressMask->new(payload => 'test');
 
 my $s = Net::Frame::Simple->new(
    layers => [ $ip, $i, $i2, ],

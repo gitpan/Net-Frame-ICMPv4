@@ -1,5 +1,5 @@
 #
-# $Id: Redirect.pm,v 1.2 2006/11/30 22:32:39 gomor Exp $
+# $Id: Redirect.pm,v 1.4 2006/12/05 21:11:44 gomor Exp $
 #
 package Net::Frame::ICMPv4::Redirect;
 use strict;
@@ -14,7 +14,6 @@ our @EXPORT_OK   = ( @{$EXPORT_TAGS{consts}} );
 
 our @AS = qw(
    gateway
-   data
 );
 __PACKAGE__->cgBuildIndices;
 __PACKAGE__->cgBuildAccessorsScalar(\@AS);
@@ -27,26 +26,20 @@ use Net::Frame::Utils qw(inetAton inetNtoa);
 sub new {
    shift->SUPER::new(
       gateway => '127.0.0.1',
-      data    => '',
+      payload => '',
       @_,
    );
 }
 
-sub getKey        { 'ICMP' }
-sub getKeyReverse { 'ICMP' }
+sub getPayloadLength { shift->SUPER::getPayloadLength }
 
-sub getDataLength {
-   my $self = shift;
-   ($self->data && length($self->data)) || 0;
-}
-
-sub getLength { 4 + shift->getDataLength }
+sub getLength { 4 + shift->getPayloadLength }
 
 sub pack {
    my $self = shift;
 
    $self->raw($self->SUPER::pack('a4 a*',
-      inetAton($self->gateway), $self->data,
+      inetAton($self->gateway), $self->payload,
    )) or return undef;
 
    $self->raw;
@@ -55,11 +48,11 @@ sub pack {
 sub unpack {
    my $self = shift;
 
-   my ($gateway, $data) = $self->SUPER::unpack('a4 a*', $self->raw)
+   my ($gateway, $payload) = $self->SUPER::unpack('a4 a*', $self->raw)
       or return undef;
 
    $self->gateway(inetNtoa($gateway));
-   $self->payload($data);
+   $self->payload($payload);
 
    $self;
 }
@@ -70,20 +63,8 @@ sub print {
    my $self = shift;
 
    my $l = $self->layer;
-   my $buf = sprintf "$l: gateway:%s", $self->gateway;
-
-   if ($self->data) {
-      $buf .= sprintf("\n$l: dataLength:%d  data:%s",
-         $self->getDataLength, $self->SUPER::unpack('H*', $self->data))
-            or return undef;
-   }
-
-   $buf;
+   sprintf "$l: gateway:%s", $self->gateway;
 }
-
-#
-# Helpers
-#
 
 1;
 
@@ -91,7 +72,7 @@ __END__
 
 =head1 NAME
 
-Net::Frame::ICMPv4 - Internet Control Message Protocol v4 layer object
+Net::Frame::ICMPv4::Redirect - ICMPv4 Redirect type object
 
 =head1 SYNOPSIS
 
@@ -332,13 +313,9 @@ Patrice E<lt>GomoRE<gt> Auffret
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2004-2006, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2006, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of the Artistic license.
 See LICENSE.Artistic file in the source distribution archive.
-
-=head1 RELATED MODULES
-
-L<NetPacket>, L<Net::RawIP>, L<Net::RawSock>
 
 =cut

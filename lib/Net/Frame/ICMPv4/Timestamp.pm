@@ -1,5 +1,5 @@
 #
-# $Id: Timestamp.pm,v 1.2 2006/11/30 22:32:39 gomor Exp $
+# $Id: Timestamp.pm,v 1.4 2006/12/05 21:11:44 gomor Exp $
 #
 package Net::Frame::ICMPv4::Timestamp;
 use strict;
@@ -18,7 +18,6 @@ our @AS = qw(
    originateTimestamp
    receiveTimestamp
    transmitTimestamp
-   data
 );
 __PACKAGE__->cgBuildIndices;
 __PACKAGE__->cgBuildAccessorsScalar(\@AS);
@@ -35,27 +34,21 @@ sub new {
       originateTimestamp => time(),
       receiveTimestamp   => 0,
       transmitTimestamp  => 0,
-      data               => '',
+      payload            => '',
       @_,
    );
 }
 
-sub getKey        { 'ICMP' }
-sub getKeyReverse { 'ICMP' }
+sub getPayloadLength { shift->SUPER::getPayloadLength }
 
-sub getDataLength {
-   my $self = shift;
-   ($self->data && length($self->data)) || 0;
-}
-
-sub getLength { 16 + shift->getDataLength }
+sub getLength { 16 + shift->getPayloadLength }
 
 sub pack {
    my $self = shift;
 
    $self->raw($self->SUPER::pack('nnNNN a*',
       $self->identifier, $self->sequenceNumber, $self->originateTimestamp,
-      $self->receiveTimestamp, $self->transmitTimestamp, $self->data,
+      $self->receiveTimestamp, $self->transmitTimestamp, $self->payload,
    )) or return undef;
 
    $self->raw;
@@ -65,15 +58,16 @@ sub unpack {
    my $self = shift;
 
    my ($identifier, $sequenceNumber, $originateTimestamp, $receiveTimestamp,
-      $transmitTimestamp, $data) = $self->SUPER::unpack('nnNNN a*', $self->raw)
-         or return undef;
+      $transmitTimestamp, $payload)
+         = $self->SUPER::unpack('nnNNN a*', $self->raw)
+            or return undef;
 
    $self->identifier($identifier);
    $self->sequenceNumber($sequenceNumber);
    $self->originateTimestamp($originateTimestamp);
    $self->receiveTimestamp($receiveTimestamp);
    $self->transmitTimestamp($transmitTimestamp);
-   $self->data($data);
+   $self->payload($payload);
 
    $self;
 }
@@ -84,24 +78,12 @@ sub print {
    my $self = shift;
 
    my $l = $self->layer;
-   my $buf = sprintf
+   sprintf
       "$l: identifier:%d  sequenceNumber:%d\n".
       "$l: originateTimestamp:%d  receiveTimestamp:%d  transmitTimestamp:%d",
          $self->identifier, $self->sequenceNumber, $self->originateTimestamp,
          $self->receiveTimestamp, $self->transmitTimestamp;
-
-   if ($self->data) {
-      $buf .= sprintf("\n$l: dataLength:%d  data:%s",
-         $self->getDataLength, $self->SUPER::unpack('H*', $self->data))
-            or return undef;
-   }
-
-   $buf;
 }
-
-#
-# Helpers
-#
 
 1;
 
@@ -109,7 +91,7 @@ __END__
 
 =head1 NAME
 
-Net::Frame::ICMPv4 - Internet Control Message Protocol v4 layer object
+Net::Frame::ICMPv4::Timestamp - ICMPv4 Timestamp type object
 
 =head1 SYNOPSIS
 
@@ -350,13 +332,9 @@ Patrice E<lt>GomoRE<gt> Auffret
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2004-2006, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2006, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of the Artistic license.
 See LICENSE.Artistic file in the source distribution archive.
-
-=head1 RELATED MODULES
-
-L<NetPacket>, L<Net::RawIP>, L<Net::RawSock>
 
 =cut

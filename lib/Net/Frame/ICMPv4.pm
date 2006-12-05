@@ -1,11 +1,11 @@
 #
-# $Id: ICMPv4.pm,v 1.3 2006/12/03 16:55:23 gomor Exp $
+# $Id: ICMPv4.pm,v 1.6 2006/12/05 19:38:56 gomor Exp $
 #
 package Net::Frame::ICMPv4;
 use strict;
 use warnings;
 
-our $VERSION = '1.00_01';
+our $VERSION = '1.00_02';
 
 use Net::Frame::Layer qw(:consts);
 require Exporter;
@@ -95,8 +95,21 @@ sub new {
    );
 }
 
-sub getKey        { 'ICMP' }
-sub getKeyReverse { 'ICMP' }
+sub match {
+   my $self = shift;
+   my ($with) = @_;
+   if ($self->type eq NP_ICMPv4_TYPE_ECHO_REQUEST
+   &&  $with->type eq NP_ICMPv4_TYPE_ECHO_REPLY) {
+      return 1;
+   }
+   #elsif () {
+   #}
+   0;
+}
+
+# XXX: may be better, by keying on type also
+sub getKey        { shift->layer }
+sub getKeyReverse { shift->layer }
 
 #sub recv {
 #   my $self = shift;
@@ -183,7 +196,7 @@ sub computeChecksums {
    my $self = shift;
    my ($h)  = @_;
 
-   my $raw = $h->{payload}->pack;
+   my $raw = $h->{icmpType}->pack;
 
    my $packed = $self->SUPER::pack('CCn', $self->type, $self->code, 0)
       or return undef;
@@ -219,35 +232,6 @@ sub print {
       $self->type, $self->code, $self->checksum;
 
    $buf;
-}
-
-#
-# Helpers
-#
-
-sub _isType                { shift->type == shift()                      }
-sub isTypeEchoRequest      { shift->_isType(NP_ICMPv4_TYPE_ECHO_REQUEST) }
-sub isTypeEchoReply        { shift->_isType(NP_ICMPv4_TYPE_ECHO_REPLY)   }
-sub isTypeTimestampRequest {
-   shift->_isType(NP_ICMPv4_TYPE_TIMESTAMP_REQUEST);
-}
-sub isTypeTimestampReply {
-   shift->_isType(NP_ICMPv4_TYPE_TIMESTAMP_REPLY);
-}
-sub isTypeInformationRequest {
-   shift->_isType(NP_ICMPv4_TYPE_INFORMATION_REQUEST);
-}
-sub isTypeInformationReply {
-   shift->_isType(NP_ICMPv4_TYPE_INFORMATION_REPLY);
-}
-sub isTypeAddressMaskRequest {
-   shift->_isType(NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST);
-}
-sub isTypeAddressMaskReply {
-   shift->_isType(NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY);
-}
-sub isTypeDestinationUnreachable {
-   shift->_isType(NP_ICMPv4_TYPE_DESTINATION_UNREACHABLE);
 }
 
 1;
@@ -497,13 +481,9 @@ Patrice E<lt>GomoRE<gt> Auffret
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2004-2006, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2006, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of the Artistic license.
 See LICENSE.Artistic file in the source distribution archive.
-
-=head1 RELATED MODULES
-
-L<NetPacket>, L<Net::RawIP>, L<Net::RawSock>
 
 =cut

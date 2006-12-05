@@ -10,7 +10,7 @@ use Net::Frame::ICMPv4::Timestamp;
 my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
 
 my $i  = Net::Frame::ICMPv4->new(type => NP_ICMPv4_TYPE_TIMESTAMP_REQUEST);
-my $i2 = Net::Frame::ICMPv4::Timestamp->new(data => 'test');
+my $i2 = Net::Frame::ICMPv4::Timestamp->new(payload => 'test');
 
 my $s = Net::Frame::Simple->new(
    layers => [ $ip, $i, $i2, ],

@@ -10,7 +10,7 @@ use Net::Frame::ICMPv4::Echo;
 my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
 
 my $i  = Net::Frame::ICMPv4->new;
-my $i2 = Net::Frame::ICMPv4::Echo->new(data => 'test');
+my $i2 = Net::Frame::ICMPv4::Echo->new(payload => 'test');
 
 my $s = Net::Frame::Simple->new(
    layers => [ $ip, $i, $i2, ],

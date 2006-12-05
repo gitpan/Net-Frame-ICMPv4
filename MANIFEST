@@ -1,6 +1,7 @@
 Changes
 examples/icmp-addressmask.pl
 examples/icmp-echo.pl
+examples/icmp-echo-send-recv.pl
 examples/icmp-information.pl
 examples/icmp-timestamp.pl
 lib/Net/Frame/ICMPv4/AddressMask.pm
@@ -23,7 +24,7 @@ t/03-test-pod.t
 t/04-icmpv4.t
 t/05-addressmask.t
 t/06-destunreach.t
-t/07-echo.pm
+t/07-echo.t
 t/08-information.t
 t/09-redirect.t
 t/10-timeexceed.t
