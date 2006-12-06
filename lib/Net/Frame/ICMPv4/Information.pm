@@ -1,16 +1,12 @@
 #
-# $Id: Information.pm,v 1.4 2006/12/05 21:11:44 gomor Exp $
+# $Id: Information.pm,v 1.5 2006/12/06 21:25:27 gomor Exp $
 #
 package Net::Frame::ICMPv4::Information;
 use strict;
 use warnings;
 
 use Net::Frame::Layer qw(:consts);
-require Exporter;
-our @ISA = qw(Net::Frame::Layer Exporter);
-
-our %EXPORT_TAGS = (consts => []);
-our @EXPORT_OK   = ( @{$EXPORT_TAGS{consts}} );
+our @ISA = qw(Net::Frame::Layer);
 
 our @AS = qw(
    identifier
@@ -60,8 +56,6 @@ sub unpack {
 
    $self;
 }
-
-sub encapsulate { NP_LAYER_NONE }
 
 sub print {
    my $self = shift;
@@ -182,67 +176,15 @@ Additionnal data can be added to an ICMP message, traditionnaly used in B<NP_ICM
 
 =item B<new>
 
-Object constructor. You can pass attributes that will overwrite default ones. Default values:
-
-type:               NP_ICMPv4_TYPE_ECHO_REQUEST
-
-code:               NP_ICMPv4_CODE_ZERO
-
-checksum:           0
-
-identifier:         getRandom16bitsInt()
-
-sequenceNumber:     getRandom16bitsInt()
-
-originateTimestamp: time()
-
-receiveTimestamp:   0
-
-transmitTimestamp:  0
-
-addressMask:        0
-
-gateway:            "127.0.0.1"
-
-unused:             0
-
-data:               ""
-
-=item B<recv>
-
-Will search for a matching replies in B<framesSorted> or B<frames> from a B<Net::Packet::Dump> object.
-
-=item B<getDataLength>
-
-Returns the length in bytes of B<data> attribute.
-
 =item B<pack>
-
-Packs all attributes into a raw format, in order to inject to network. Returns 1 on success, undef otherwise.
 
 =item B<unpack>
 
-Unpacks raw data from network and stores attributes into the object. Returns 1 on success, undef otherwise.
+=item B<getLength>
 
-=item B<isTypeEchoRequest>
+=item B<getPayloadLength>
 
-=item B<isTypeEchoReply>
-
-=item B<isTypeTimestampRequest>
-
-=item B<isTypeTimestampReply>
-
-=item B<isTypeInformationRequest>
-
-=item B<isTypeInformationReply>
-
-=item B<isTypeAddressMaskRequest>
-
-=item B<isTypeAddressMaskReply>
-
-=item B<isTypeDestinationUnreachable>
-
-Returns 1 if the B<type> attribute is of specified type.
+=item B<print>
 
 =back
 

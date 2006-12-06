@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::Redirect qw(:consts);
+use Net::Frame::ICMPv4::Redirect;
 
 my $l = Net::Frame::ICMPv4::Redirect->new;
 $l->pack;

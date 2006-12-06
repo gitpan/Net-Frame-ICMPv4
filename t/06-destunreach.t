@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::DestUnreach qw(:consts);
+use Net::Frame::ICMPv4::DestUnreach;
 
 my $l = Net::Frame::ICMPv4::DestUnreach->new;
 $l->pack;

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Net-Frame-ICMPv4
-version:             1.00_02
+version:             1.00_03
 abstract:            Internet Control Message Protocol v4 layer object
 license:             Artistic
 generated_by:        ExtUtils::MakeMaker version 6.31

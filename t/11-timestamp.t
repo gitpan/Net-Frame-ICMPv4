@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::Timestamp qw(:consts);
+use Net::Frame::ICMPv4::Timestamp;
 
 my $l = Net::Frame::ICMPv4::Timestamp->new;
 $l->pack;

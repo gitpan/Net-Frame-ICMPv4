@@ -9,18 +9,20 @@ use Net::Frame::ICMPv4::Timestamp;
 
 my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
 
-my $i  = Net::Frame::ICMPv4->new(type => NP_ICMPv4_TYPE_TIMESTAMP_REQUEST);
-my $i2 = Net::Frame::ICMPv4::Timestamp->new(payload => 'test');
-
-my $s = Net::Frame::Simple->new(
-   layers => [ $ip, $i, $i2, ],
+my $icmp = Net::Frame::ICMPv4->new(
+   type     => NP_ICMPv4_TYPE_TIMESTAMP_REQUEST,
+   icmpType => Net::Frame::ICMPv4::Timestamp->new(payload => 'test'),
 );
-print $s->print."\n";
-print unpack('H*', $s->raw)."\n";
 
-my $s2 = Net::Frame::Simple->new(
-   raw        => $s->raw,
+my $oSimple = Net::Frame::Simple->new(
+   layers => [ $ip, $icmp, ],
+);
+print $oSimple->print."\n";
+print unpack('H*', $oSimple->raw)."\n";
+
+my $oSimple2 = Net::Frame::Simple->new(
+   raw        => $oSimple->raw,
    firstLayer => 'IPv4',
 );
-print $s2->print."\n";
-print unpack('H*', $s2->raw)."\n";
+print $oSimple2->print."\n";
+print unpack('H*', $oSimple2->raw)."\n";

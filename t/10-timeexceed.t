@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::TimeExceed qw(:consts);
+use Net::Frame::ICMPv4::TimeExceed;
 
 my $l = Net::Frame::ICMPv4::TimeExceed->new;
 $l->pack;

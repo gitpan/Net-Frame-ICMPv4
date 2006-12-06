@@ -20,12 +20,14 @@ my $ip = Net::Frame::IPv4->new(
    dst      => $target,
    protocol => NP_IPv4_PROTOCOL_ICMPv4,
 );
-my $ihdr = Net::Frame::ICMPv4->new;
-my $icmp = Net::Frame::ICMPv4::Echo->new(payload => 'test');
+my $icmp = Net::Frame::ICMPv4->new(
+   icmpType => Net::Frame::ICMPv4::Echo->new(payload => 'test'),
+);
 
 my $oSimple = Net::Frame::Simple->new(
-   layers => [ $ip, $ihdr, $icmp, ],
+   layers => [ $ip, $icmp, ],
 );
+print $oSimple->print."\n";
 
 my $oDump = Net::Frame::Dump::Online->new(dev => $oDevice->dev);
 $oDump->start;

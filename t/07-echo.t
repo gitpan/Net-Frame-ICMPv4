@@ -1,9 +1,9 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4 qw(:consts);
+use Net::Frame::ICMPv4::Echo;
 
-my $l = Net::Frame::ICMPv4->new;
+my $l = Net::Frame::ICMPv4::Echo->new;
 $l->pack;
 $l->unpack;
 

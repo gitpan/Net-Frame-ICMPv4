@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::AddressMask qw(:consts);
+use Net::Frame::ICMPv4::AddressMask;
 
 my $l = Net::Frame::ICMPv4::AddressMask->new;
 $l->pack;

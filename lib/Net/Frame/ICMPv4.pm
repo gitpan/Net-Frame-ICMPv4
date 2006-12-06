@@ -1,11 +1,11 @@
 #
-# $Id: ICMPv4.pm,v 1.6 2006/12/05 19:38:56 gomor Exp $
+# $Id: ICMPv4.pm,v 1.7 2006/12/06 21:24:23 gomor Exp $
 #
 package Net::Frame::ICMPv4;
 use strict;
 use warnings;
 
-our $VERSION = '1.00_02';
+our $VERSION = '1.00_03';
 
 use Net::Frame::Layer qw(:consts);
 require Exporter;
@@ -15,21 +15,24 @@ our %EXPORT_TAGS = (
    consts => [qw(
       NP_ICMPv4_HDR_LEN
       NP_ICMPv4_CODE_ZERO
-      NP_ICMPv4_TYPE_DESTINATION_UNREACHABLE
+      NP_ICMPv4_TYPE_DESTUNREACH
       NP_ICMPv4_CODE_NETWORK
       NP_ICMPv4_CODE_HOST
       NP_ICMPv4_CODE_PROTOCOL
       NP_ICMPv4_CODE_PORT
       NP_ICMPv4_CODE_FRAGMENTATION_NEEDED
       NP_ICMPv4_CODE_SOURCE_ROUTE_FAILED
+      NP_ICMPv4_TYPE_TIMEEXCEED
+      NP_ICMPv4_CODE_TTL_IN_TRANSIT
+      NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY
+      NP_ICMPv4_TYPE_PARAMETERPROBLEM
+      NP_ICMPv4_CODE_POINTER
+      NP_ICMPv4_TYPE_SOURCEQUENCH
       NP_ICMPv4_TYPE_REDIRECT
       NP_ICMPv4_CODE_FOR_NETWORK
       NP_ICMPv4_CODE_FOR_HOST
       NP_ICMPv4_CODE_FOR_TOS_AND_NETWORK
       NP_ICMPv4_CODE_FOR_TOS_AND_HOST
-      NP_ICMPv4_TYPE_TIME_EXCEEDED
-      NP_ICMPv4_CODE_TTL_IN_TRANSIT
-      NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY
       NP_ICMPv4_TYPE_ECHO_REQUEST
       NP_ICMPv4_TYPE_ECHO_REPLY
       NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
@@ -46,19 +49,19 @@ our @EXPORT_OK = (
 
 use constant NP_ICMPv4_HDR_LEN                      => 8;
 use constant NP_ICMPv4_CODE_ZERO                    => 0;
-use constant NP_ICMPv4_TYPE_DESTINATION_UNREACHABLE => 3;
+use constant NP_ICMPv4_TYPE_DESTUNREACH             => 3;
 use constant NP_ICMPv4_CODE_NETWORK                 => 0;
 use constant NP_ICMPv4_CODE_HOST                    => 1;
 use constant NP_ICMPv4_CODE_PROTOCOL                => 2;
 use constant NP_ICMPv4_CODE_PORT                    => 3;
 use constant NP_ICMPv4_CODE_FRAGMENTATION_NEEDED    => 4;
 use constant NP_ICMPv4_CODE_SOURCE_ROUTE_FAILED     => 5;
-use constant NP_ICMPv4_TYPE_TIME_EXCEEDED           => 11;
+use constant NP_ICMPv4_TYPE_TIMEEXCEED              => 11;
 use constant NP_ICMPv4_CODE_TTL_IN_TRANSIT          => 0;
 use constant NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY     => 1;
-use constant NP_ICMPv4_TYPE_PARAMETER_PROBLEM       => 12;
+use constant NP_ICMPv4_TYPE_PARAMETERPROBLEM        => 12;
 use constant NP_ICMPv4_CODE_POINTER                 => 0;
-use constant NP_ICMPv4_TYPE_SOURCE_QUENCH           => 4;
+use constant NP_ICMPv4_TYPE_SOURCEQUENCH            => 4;
 use constant NP_ICMPv4_TYPE_REDIRECT                => 5;
 use constant NP_ICMPv4_CODE_FOR_NETWORK             => 0;
 use constant NP_ICMPv4_CODE_FOR_HOST                => 1;
@@ -77,6 +80,7 @@ our @AS = qw(
    type
    code
    checksum
+   icmpType
 );
 __PACKAGE__->cgBuildIndices;
 __PACKAGE__->cgBuildAccessorsScalar(\@AS);
@@ -85,6 +89,13 @@ __PACKAGE__->cgBuildAccessorsScalar(\@AS);
 
 use Carp;
 use Net::Frame::Utils qw(inetChecksum);
+require Net::Frame::ICMPv4::AddressMask;
+require Net::Frame::ICMPv4::DestUnreach;
+require Net::Frame::ICMPv4::Echo;
+require Net::Frame::ICMPv4::Information;
+require Net::Frame::ICMPv4::Redirect;
+require Net::Frame::ICMPv4::TimeExceed;
+require Net::Frame::ICMPv4::Timestamp;
 
 sub new {
    shift->SUPER::new(
@@ -165,16 +176,31 @@ sub getKeyReverse { shift->layer }
 #   undef;
 #}
 
-sub getLength { 4 }
+sub getLength {
+   my $self = shift;
+   my $len = 4;
+   if ($self->icmpType) {
+      $len += $self->icmpType->getLength;
+   }
+   $len;
+}
 
 sub pack {
    my $self = shift;
 
-   $self->raw($self->SUPER::pack('CCn',
+   my $raw = $self->SUPER::pack('CCn',
       $self->type, $self->code, $self->checksum,
-   )) or return undef;
+   ) or return undef;
 
-   $self->raw;
+   if ($self->icmpType) {
+      $raw .= $self->icmpType->pack
+         or return undef;
+
+      $self->payload($self->icmpType->payload);
+      $self->icmpType->payload(undef);
+   }
+
+   $self->raw($raw);
 }
 
 sub unpack {
@@ -187,41 +213,67 @@ sub unpack {
    $self->type($type);
    $self->code($code);
    $self->checksum($checksum);
-   $self->payload($payload);
+
+   if ($payload) {
+      if ($type eq NP_ICMPv4_TYPE_ECHO_REQUEST
+      ||  $type eq NP_ICMPv4_TYPE_ECHO_REPLY) {
+         $self->icmpType(Net::Frame::ICMPv4::Echo->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
+         ||  $type eq NP_ICMPv4_TYPE_TIMESTAMP_REPLY) {
+         $self->icmpType(Net::Frame::ICMPv4::Timestamp->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_INFORMATION_REQUEST
+         ||  $type eq NP_ICMPv4_TYPE_INFORMATION_REPLY) {
+         $self->icmpType(Net::Frame::ICMPv4::Information->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
+         ||  $type eq NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
+         $self->icmpType(Net::Frame::ICMPv4::AddressMask->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_DESTUNREACH) {
+         $self->icmpType(Net::Frame::ICMPv4::DestUnreach->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_REDIRECT) {
+         $self->icmpType(Net::Frame::ICMPv4::Redirect->new(raw => $payload));
+      }
+      elsif ($type eq NP_ICMPv4_TYPE_TIMEEXCEED) {
+         $self->icmpType(Net::Frame::ICMPv4::TimeExceed->new(raw => $payload));
+      }
+      $self->icmpType->unpack;
+      if ($self->icmpType->payload) {
+         $self->payload($self->icmpType->payload);
+         $self->icmpType->payload(undef);
+      }
+   }
 
    $self;
 }
 
 sub computeChecksums {
    my $self = shift;
-   my ($h)  = @_;
 
-   my $raw = $h->{icmpType}->pack;
+   my $packed = $self->SUPER::pack('CCna*',
+      $self->type, $self->code, 0, $self->icmpType->pack,
+   ) or return undef;
 
-   my $packed = $self->SUPER::pack('CCn', $self->type, $self->code, 0)
-      or return undef;
-
-   $self->checksum(inetChecksum($packed.$raw));
+   $self->checksum(inetChecksum($packed));
 
    1;
 }
 
 sub encapsulate {
-   my $types = {
-      NP_ICMPv4_TYPE_ECHO_REQUEST()            => 'ICMPv4::Echo',
-      NP_ICMPv4_TYPE_ECHO_REPLY()              => 'ICMPv4::Echo',
-      NP_ICMPv4_TYPE_TIMESTAMP_REQUEST()       => 'ICMPv4::Timestamp',
-      NP_ICMPv4_TYPE_TIMESTAMP_REPLY()         => 'ICMPv4::Timestamp',
-      NP_ICMPv4_TYPE_INFORMATION_REQUEST()     => 'ICMPv4::Information',
-      NP_ICMPv4_TYPE_INFORMATION_REPLY()       => 'ICMPv4::Information',
-      NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST()    => 'ICMPv4::AddressMask',
-      NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY()      => 'ICMPv4::AddressMask',
-      NP_ICMPv4_TYPE_DESTINATION_UNREACHABLE() => 'ICMPv4::DestUnreach',
-      NP_ICMPv4_TYPE_REDIRECT()                => 'ICMPv4::Redirect',
-      NP_ICMPv4_TYPE_TIME_EXCEEDED()           => 'ICMPv4::TimeExceed',
-   };
+   my $self = shift;
+   if ($self->payload) {
+      my $type = $self->type;
+      if ($type eq NP_ICMPv4_TYPE_DESTUNREACH
+      ||  $type eq NP_ICMPv4_TYPE_REDIRECT
+      ||  $type eq NP_ICMPv4_TYPE_TIMEEXCEED) {
+         return 'IPv4';
+      }
+   }
 
-   $types->{shift->type} || NP_LAYER_UNKNOWN;
+   NP_LAYER_NONE;
 }
 
 sub print {
@@ -230,6 +282,10 @@ sub print {
    my $l = $self->layer;
    my $buf = sprintf "$l: type:%d  code:%d  checksum:0x%04x",
       $self->type, $self->code, $self->checksum;
+
+   if ($self->icmpType) {
+      $buf .= "\n".$self->icmpType->print;
+   }
 
    $buf;
 }
@@ -345,67 +401,25 @@ Additionnal data can be added to an ICMP message, traditionnaly used in B<NP_ICM
 
 =item B<new>
 
-Object constructor. You can pass attributes that will overwrite default ones. Default values:
+=item B<computeLengths>
 
-type:               NP_ICMPv4_TYPE_ECHO_REQUEST
-
-code:               NP_ICMPv4_CODE_ZERO
-
-checksum:           0
-
-identifier:         getRandom16bitsInt()
-
-sequenceNumber:     getRandom16bitsInt()
-
-originateTimestamp: time()
-
-receiveTimestamp:   0
-
-transmitTimestamp:  0
-
-addressMask:        0
-
-gateway:            "127.0.0.1"
-
-unused:             0
-
-data:               ""
-
-=item B<recv>
-
-Will search for a matching replies in B<framesSorted> or B<frames> from a B<Net::Packet::Dump> object.
-
-=item B<getDataLength>
-
-Returns the length in bytes of B<data> attribute.
+=item B<computeChecksums>
 
 =item B<pack>
 
-Packs all attributes into a raw format, in order to inject to network. Returns 1 on success, undef otherwise.
-
 =item B<unpack>
 
-Unpacks raw data from network and stores attributes into the object. Returns 1 on success, undef otherwise.
+=item B<getLength>
 
-=item B<isTypeEchoRequest>
+=item B<getKey>
 
-=item B<isTypeEchoReply>
+=item B<getKeyReverse>
 
-=item B<isTypeTimestampRequest>
+=item B<match>
 
-=item B<isTypeTimestampReply>
+=item B<encapsulate>
 
-=item B<isTypeInformationRequest>
-
-=item B<isTypeInformationReply>
-
-=item B<isTypeAddressMaskRequest>
-
-=item B<isTypeAddressMaskReply>
-
-=item B<isTypeDestinationUnreachable>
-
-Returns 1 if the B<type> attribute is of specified type.
+=item B<print>
 
 =back
 

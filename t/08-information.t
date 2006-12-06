@@ -1,7 +1,7 @@
 use Test;
 BEGIN { plan(tests => 1) }
 
-use Net::Frame::ICMPv4::Information qw(:consts);
+use Net::Frame::ICMPv4::Information;
 
 my $l = Net::Frame::ICMPv4::Information->new;
 $l->pack;
