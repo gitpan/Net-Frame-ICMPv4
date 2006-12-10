@@ -18,7 +18,7 @@ my $oDevice = Net::Frame::Device->new(target => $target);
 my $ip = Net::Frame::IPv4->new(
    src      => $oDevice->ip,
    dst      => $target,
-   protocol => NP_IPv4_PROTOCOL_ICMPv4,
+   protocol => NF_IPv4_PROTOCOL_ICMPv4,
 );
 my $icmp = Net::Frame::ICMPv4->new(
    icmpType => Net::Frame::ICMPv4::Echo->new(payload => 'test'),

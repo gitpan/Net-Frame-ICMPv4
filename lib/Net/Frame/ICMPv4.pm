@@ -1,11 +1,11 @@
 #
-# $Id: ICMPv4.pm,v 1.7 2006/12/06 21:24:23 gomor Exp $
+# $Id: ICMPv4.pm,v 1.10 2006/12/10 16:24:29 gomor Exp $
 #
 package Net::Frame::ICMPv4;
 use strict;
 use warnings;
 
-our $VERSION = '1.00_03';
+our $VERSION = '1.00';
 
 use Net::Frame::Layer qw(:consts);
 require Exporter;
@@ -13,68 +13,68 @@ our @ISA = qw(Net::Frame::Layer Exporter);
 
 our %EXPORT_TAGS = (
    consts => [qw(
-      NP_ICMPv4_HDR_LEN
-      NP_ICMPv4_CODE_ZERO
-      NP_ICMPv4_TYPE_DESTUNREACH
-      NP_ICMPv4_CODE_NETWORK
-      NP_ICMPv4_CODE_HOST
-      NP_ICMPv4_CODE_PROTOCOL
-      NP_ICMPv4_CODE_PORT
-      NP_ICMPv4_CODE_FRAGMENTATION_NEEDED
-      NP_ICMPv4_CODE_SOURCE_ROUTE_FAILED
-      NP_ICMPv4_TYPE_TIMEEXCEED
-      NP_ICMPv4_CODE_TTL_IN_TRANSIT
-      NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY
-      NP_ICMPv4_TYPE_PARAMETERPROBLEM
-      NP_ICMPv4_CODE_POINTER
-      NP_ICMPv4_TYPE_SOURCEQUENCH
-      NP_ICMPv4_TYPE_REDIRECT
-      NP_ICMPv4_CODE_FOR_NETWORK
-      NP_ICMPv4_CODE_FOR_HOST
-      NP_ICMPv4_CODE_FOR_TOS_AND_NETWORK
-      NP_ICMPv4_CODE_FOR_TOS_AND_HOST
-      NP_ICMPv4_TYPE_ECHO_REQUEST
-      NP_ICMPv4_TYPE_ECHO_REPLY
-      NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
-      NP_ICMPv4_TYPE_TIMESTAMP_REPLY
-      NP_ICMPv4_TYPE_INFORMATION_REQUEST
-      NP_ICMPv4_TYPE_INFORMATION_REPLY
-      NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
-      NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY
+      NF_ICMPv4_HDR_LEN
+      NF_ICMPv4_CODE_ZERO
+      NF_ICMPv4_TYPE_DESTUNREACH
+      NF_ICMPv4_CODE_NETWORK
+      NF_ICMPv4_CODE_HOST
+      NF_ICMPv4_CODE_PROTOCOL
+      NF_ICMPv4_CODE_PORT
+      NF_ICMPv4_CODE_FRAGMENTATION_NEEDED
+      NF_ICMPv4_CODE_SOURCE_ROUTE_FAILED
+      NF_ICMPv4_TYPE_TIMEEXCEED
+      NF_ICMPv4_CODE_TTL_IN_TRANSIT
+      NF_ICMPv4_CODE_FRAGMENT_REASSEMBLY
+      NF_ICMPv4_TYPE_PARAMETERPROBLEM
+      NF_ICMPv4_CODE_POINTER
+      NF_ICMPv4_TYPE_SOURCEQUENCH
+      NF_ICMPv4_TYPE_REDIRECT
+      NF_ICMPv4_CODE_FOR_NETWORK
+      NF_ICMPv4_CODE_FOR_HOST
+      NF_ICMPv4_CODE_FOR_TOS_AND_NETWORK
+      NF_ICMPv4_CODE_FOR_TOS_AND_HOST
+      NF_ICMPv4_TYPE_ECHO_REQUEST
+      NF_ICMPv4_TYPE_ECHO_REPLY
+      NF_ICMPv4_TYPE_TIMESTAMP_REQUEST
+      NF_ICMPv4_TYPE_TIMESTAMP_REPLY
+      NF_ICMPv4_TYPE_INFORMATION_REQUEST
+      NF_ICMPv4_TYPE_INFORMATION_REPLY
+      NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
+      NF_ICMPv4_TYPE_ADDRESS_MASK_REPLY
    )],
 );
 our @EXPORT_OK = (
    @{$EXPORT_TAGS{consts}},
 );
 
-use constant NP_ICMPv4_HDR_LEN                      => 8;
-use constant NP_ICMPv4_CODE_ZERO                    => 0;
-use constant NP_ICMPv4_TYPE_DESTUNREACH             => 3;
-use constant NP_ICMPv4_CODE_NETWORK                 => 0;
-use constant NP_ICMPv4_CODE_HOST                    => 1;
-use constant NP_ICMPv4_CODE_PROTOCOL                => 2;
-use constant NP_ICMPv4_CODE_PORT                    => 3;
-use constant NP_ICMPv4_CODE_FRAGMENTATION_NEEDED    => 4;
-use constant NP_ICMPv4_CODE_SOURCE_ROUTE_FAILED     => 5;
-use constant NP_ICMPv4_TYPE_TIMEEXCEED              => 11;
-use constant NP_ICMPv4_CODE_TTL_IN_TRANSIT          => 0;
-use constant NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY     => 1;
-use constant NP_ICMPv4_TYPE_PARAMETERPROBLEM        => 12;
-use constant NP_ICMPv4_CODE_POINTER                 => 0;
-use constant NP_ICMPv4_TYPE_SOURCEQUENCH            => 4;
-use constant NP_ICMPv4_TYPE_REDIRECT                => 5;
-use constant NP_ICMPv4_CODE_FOR_NETWORK             => 0;
-use constant NP_ICMPv4_CODE_FOR_HOST                => 1;
-use constant NP_ICMPv4_CODE_FOR_TOS_AND_NETWORK     => 2;
-use constant NP_ICMPv4_CODE_FOR_TOS_AND_HOST        => 3;
-use constant NP_ICMPv4_TYPE_ECHO_REQUEST            => 8;
-use constant NP_ICMPv4_TYPE_ECHO_REPLY              => 0;
-use constant NP_ICMPv4_TYPE_TIMESTAMP_REQUEST       => 13;
-use constant NP_ICMPv4_TYPE_TIMESTAMP_REPLY         => 14;
-use constant NP_ICMPv4_TYPE_INFORMATION_REQUEST     => 15;
-use constant NP_ICMPv4_TYPE_INFORMATION_REPLY       => 16;
-use constant NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST    => 17; # RFC 950
-use constant NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY      => 18; # RFC 950
+use constant NF_ICMPv4_HDR_LEN                      => 8;
+use constant NF_ICMPv4_CODE_ZERO                    => 0;
+use constant NF_ICMPv4_TYPE_DESTUNREACH             => 3;
+use constant NF_ICMPv4_CODE_NETWORK                 => 0;
+use constant NF_ICMPv4_CODE_HOST                    => 1;
+use constant NF_ICMPv4_CODE_PROTOCOL                => 2;
+use constant NF_ICMPv4_CODE_PORT                    => 3;
+use constant NF_ICMPv4_CODE_FRAGMENTATION_NEEDED    => 4;
+use constant NF_ICMPv4_CODE_SOURCE_ROUTE_FAILED     => 5;
+use constant NF_ICMPv4_TYPE_TIMEEXCEED              => 11;
+use constant NF_ICMPv4_CODE_TTL_IN_TRANSIT          => 0;
+use constant NF_ICMPv4_CODE_FRAGMENT_REASSEMBLY     => 1;
+use constant NF_ICMPv4_TYPE_PARAMETERPROBLEM        => 12;
+use constant NF_ICMPv4_CODE_POINTER                 => 0;
+use constant NF_ICMPv4_TYPE_SOURCEQUENCH            => 4;
+use constant NF_ICMPv4_TYPE_REDIRECT                => 5;
+use constant NF_ICMPv4_CODE_FOR_NETWORK             => 0;
+use constant NF_ICMPv4_CODE_FOR_HOST                => 1;
+use constant NF_ICMPv4_CODE_FOR_TOS_AND_NETWORK     => 2;
+use constant NF_ICMPv4_CODE_FOR_TOS_AND_HOST        => 3;
+use constant NF_ICMPv4_TYPE_ECHO_REQUEST            => 8;
+use constant NF_ICMPv4_TYPE_ECHO_REPLY              => 0;
+use constant NF_ICMPv4_TYPE_TIMESTAMP_REQUEST       => 13;
+use constant NF_ICMPv4_TYPE_TIMESTAMP_REPLY         => 14;
+use constant NF_ICMPv4_TYPE_INFORMATION_REQUEST     => 15;
+use constant NF_ICMPv4_TYPE_INFORMATION_REPLY       => 16;
+use constant NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST    => 17; # RFC 950
+use constant NF_ICMPv4_TYPE_ADDRESS_MASK_REPLY      => 18; # RFC 950
 
 our @AS = qw(
    type
@@ -99,8 +99,8 @@ require Net::Frame::ICMPv4::Timestamp;
 
 sub new {
    shift->SUPER::new(
-      type     => NP_ICMPv4_TYPE_ECHO_REQUEST,
-      code     => NP_ICMPv4_CODE_ZERO,
+      type     => NF_ICMPv4_TYPE_ECHO_REQUEST,
+      code     => NF_ICMPv4_CODE_ZERO,
       checksum => 0,
       @_,
    );
@@ -109,72 +109,30 @@ sub new {
 sub match {
    my $self = shift;
    my ($with) = @_;
-   if ($self->type eq NP_ICMPv4_TYPE_ECHO_REQUEST
-   &&  $with->type eq NP_ICMPv4_TYPE_ECHO_REPLY) {
+   my $sType = $self->type;
+   my $wType = $with->type;
+   if ($sType eq NF_ICMPv4_TYPE_ECHO_REQUEST
+   &&  $wType eq NF_ICMPv4_TYPE_ECHO_REPLY) {
       return 1;
    }
-   #elsif () {
-   #}
+   elsif ($sType eq NF_ICMPv4_TYPE_TIMESTAMP_REQUEST
+      &&  $wType eq NF_ICMPv4_TYPE_TIMESTAMP_REPLY) {
+      return 1;
+   }
+   elsif ($sType eq NF_ICMPv4_TYPE_INFORMATION_REQUEST
+      &&  $wType eq NF_ICMPv4_TYPE_INFORMATION_REPLY) {
+      return 1;
+   }
+   elsif ($sType eq NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
+      &&  $wType eq NF_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
+      return 1;
+   }
    0;
 }
 
 # XXX: may be better, by keying on type also
 sub getKey        { shift->layer }
 sub getKeyReverse { shift->layer }
-
-#sub recv {
-#   my $self = shift;
-#   my ($frame) = @_;
-#
-#   my $env = $frame->env;
-#
-#   for ($env->dump->frames) {
-#      next unless $_->timestamp ge $frame->timestamp;
-#
-#      if ($frame->l3) {
-#         if ($_->isIcmpv4 && $_->l3->src eq $frame->l3->dst) {
-#            if ($self->[$__type] == NP_ICMPv4_TYPE_ECHO_REQUEST
-#            &&  $_->l4->type     == NP_ICMPv4_TYPE_ECHO_REPLY) {
-#               return $_;
-#            }
-#            elsif ($self->[$__type] == NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
-#               &&  $_->l4->type     == NP_ICMPv4_TYPE_TIMESTAMP_REPLY) {
-#               return $_;
-#            }
-#            elsif ($self->[$__type] == NP_ICMPv4_TYPE_INFORMATION_REQUEST
-#               &&  $_->l4->type     == NP_ICMPv4_TYPE_INFORMATION_REPLY) {
-#               return $_;
-#            }
-#            elsif ($self->[$__type] == NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
-#               &&  $_->l4->type     == NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
-#               return $_;
-#            }
-#         }
-#      }
-#      # DescL4 recv, warning, it may receive a packet targetted at another
-#      # host, since no L3 headers is kept at D4 for packet matching
-#      else {
-#         if ($self->[$__type] == NP_ICMPv4_TYPE_ECHO_REQUEST
-#         &&  $_->l4->type     == NP_ICMPv4_TYPE_ECHO_REPLY) {
-#               return $_;
-#         }
-#         elsif ($self->[$__type] == NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
-#            &&  $_->l4->type     == NP_ICMPv4_TYPE_TIMESTAMP_REPLY) {
-#            return $_;
-#         }
-#         elsif ($self->[$__type] == NP_ICMPv4_TYPE_INFORMATION_REQUEST
-#            &&  $_->l4->type     == NP_ICMPv4_TYPE_INFORMATION_REPLY) {
-#            return $_;
-#         }
-#         elsif ($self->[$__type] == NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
-#            &&  $_->l4->type     == NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
-#            return $_;
-#         }
-#      }
-#   }
-#
-#   undef;
-#}
 
 sub getLength {
    my $self = shift;
@@ -215,29 +173,29 @@ sub unpack {
    $self->checksum($checksum);
 
    if ($payload) {
-      if ($type eq NP_ICMPv4_TYPE_ECHO_REQUEST
-      ||  $type eq NP_ICMPv4_TYPE_ECHO_REPLY) {
+      if ($type eq NF_ICMPv4_TYPE_ECHO_REQUEST
+      ||  $type eq NF_ICMPv4_TYPE_ECHO_REPLY) {
          $self->icmpType(Net::Frame::ICMPv4::Echo->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_TIMESTAMP_REQUEST
-         ||  $type eq NP_ICMPv4_TYPE_TIMESTAMP_REPLY) {
+      elsif ($type eq NF_ICMPv4_TYPE_TIMESTAMP_REQUEST
+         ||  $type eq NF_ICMPv4_TYPE_TIMESTAMP_REPLY) {
          $self->icmpType(Net::Frame::ICMPv4::Timestamp->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_INFORMATION_REQUEST
-         ||  $type eq NP_ICMPv4_TYPE_INFORMATION_REPLY) {
+      elsif ($type eq NF_ICMPv4_TYPE_INFORMATION_REQUEST
+         ||  $type eq NF_ICMPv4_TYPE_INFORMATION_REPLY) {
          $self->icmpType(Net::Frame::ICMPv4::Information->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
-         ||  $type eq NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
+      elsif ($type eq NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST
+         ||  $type eq NF_ICMPv4_TYPE_ADDRESS_MASK_REPLY) {
          $self->icmpType(Net::Frame::ICMPv4::AddressMask->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_DESTUNREACH) {
+      elsif ($type eq NF_ICMPv4_TYPE_DESTUNREACH) {
          $self->icmpType(Net::Frame::ICMPv4::DestUnreach->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_REDIRECT) {
+      elsif ($type eq NF_ICMPv4_TYPE_REDIRECT) {
          $self->icmpType(Net::Frame::ICMPv4::Redirect->new(raw => $payload));
       }
-      elsif ($type eq NP_ICMPv4_TYPE_TIMEEXCEED) {
+      elsif ($type eq NF_ICMPv4_TYPE_TIMEEXCEED) {
          $self->icmpType(Net::Frame::ICMPv4::TimeExceed->new(raw => $payload));
       }
       $self->icmpType->unpack;
@@ -264,16 +222,19 @@ sub computeChecksums {
 
 sub encapsulate {
    my $self = shift;
+
+   return $self->nextLayer if $self->nextLayer;
+
    if ($self->payload) {
       my $type = $self->type;
-      if ($type eq NP_ICMPv4_TYPE_DESTUNREACH
-      ||  $type eq NP_ICMPv4_TYPE_REDIRECT
-      ||  $type eq NP_ICMPv4_TYPE_TIMEEXCEED) {
+      if ($type eq NF_ICMPv4_TYPE_DESTUNREACH
+      ||  $type eq NF_ICMPv4_TYPE_REDIRECT
+      ||  $type eq NF_ICMPv4_TYPE_TIMEEXCEED) {
          return 'IPv4';
       }
    }
 
-   NP_LAYER_NONE;
+   NF_LAYER_NONE;
 }
 
 sub print {
@@ -300,35 +261,51 @@ Net::Frame::ICMPv4 - Internet Control Message Protocol v4 layer object
 
 =head1 SYNOPSIS
 
-   use Net::Packet::Consts qw(:icmpv4);
-   require Net::Packet::ICMPv4;
+   use Net::Frame::ICMPv4 qw(:consts);
 
-   # Build echo-request header
-   my $echo = Net::Packet::ICMPv4->new(data => '0123456789');
-
-   # Build information-request header
-   my $info = Net::Packet::ICMPv4->new(
-      type => NP_ICMPv4_TYPE_INFORMATION_REQUEST,
-      data => '0123456789',
+   my $icmp = Net::Frame::ICMPv4->new(
+      type     => NF_ICMPv4_TYPE_ECHO_REQUEST,
+      code     => NF_ICMPv4_CODE_ZERO,
+      checksum => 0,
    );
 
-   # Build address-mask request header
-   my $mask = Net::Packet::ICMPv4->new(
-      type => NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST,
-      data => '0123456789',
-   );
+   # Build an ICMPv4 echo-request
+   use Net::Frame::ICMPv4::Echo;
+   my $echo = Net::Frame::ICMPv4::Echo->new(payload => 'echo');
+   $icmp->icmpType($echo);
+   $icmp->pack;
 
-   # Build timestamp request header
-   my $timestamp = Net::Packet::ICMPv4->new(
-      type => NP_ICMPv4_TYPE_TIMESTAMP_REQUEST,
-      data => '0123456789',
-   );
-   $timestamp->pack;
+   print $icmp->print."\n";
 
-   print 'RAW: '.unpack('H*', $timestamp->raw)."\n";
+   # Build an information-request
+   use Net::Frame::ICMPv4::Information;
+   my $info = Net::Frame::ICMPv4::Information->new(payload => 'info');
+   $icmp->type(NF_ICMPv4_TYPE_INFORMATION_REQUEST);
+   $icmp->icmpType($info);
+   $icmp->pack;
+
+   print $icmp->print."\n";
+
+   # Build an address-mask request
+   use Net::Frame::ICMPv4::AddressMask;
+   my $mask = Net::Frame::ICMPv4::AddressMask->new(payload => 'mask');
+   $icmp->type(NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST);
+   $icmp->icmpType($mask);
+   $icmp->pack;
+
+   print $icmp->print."\n";
+
+   # Build a timestamp request
+   use Net::Frame::ICMPv4::Timestamp;
+   my $timestamp = Net::Frame::ICMPv4::Timestamp->new(payload => 'time');
+   $icmp->type(NF_ICMPv4_TYPE_TIMESTAMP_REQUEST);
+   $icmp->icmpType($timestamp);
+   $icmp->pack;
+
+   print $icmp->print."\n";
 
    # Read a raw layer
-   my $layer = Net::Packet::ICMPv4->new(raw => $raw);
+   my $layer = Net::Frame::ICMPv4->new(raw => $raw);
 
    print $layer->print."\n";
    print 'PAYLOAD: '.unpack('H*', $layer->payload)."\n"
@@ -340,8 +317,7 @@ This modules implements the encoding and decoding of the ICMPv4 layer.
 
 RFC: ftp://ftp.rfc-editor.org/in-notes/rfc792.txt
 
-See also B<Net::Packet::Layer> and B<Net::Packet::Layer4> for other attributes a
-nd methods.
+See also B<Net::Frame::Layer> for other attributes and methods.
 
 =head1 ATTRIBUTES
 
@@ -357,41 +333,21 @@ Type and code fields. See B<CONSTANTS>.
 
 The checksum of ICMPv4 header.
 
-=item B<identifier>
+=item B<icmpType>
 
-Identification number.
+A pointer to a B<Net::Frame::ICMPv4::*> layer.
 
-=item B<sequenceNumber>
+=back
 
-Sequence number.
+The following are inherited attributes. See B<Net::Frame::Layer> for more information.
 
-=item B<originateTimestamp>
+=over 4
 
-=item B<receiveTimestamp>
+=item B<raw>
 
-=item B<transmitTimestamp>
+=item B<payload>
 
-Three timestamps used by the B<NP_ICMPv4_TYPE_TIMESTAMP_REQUEST> message.
-
-=item B<addressMask>
-
-Used by the B<NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST> message.
-
-=item B<gateway>
-
-Used by the B<NP_ICMPv4_TYPE_REDIRECT> message.
-
-=item B<unused>
-
-Zero value field used in various ICMP messages.
-
-=item B<error>
-
-A pointer to a B<Net::Packet::Frame> object, usually set when an ICMP error message has been returned.
-
-=item B<data>
-
-Additionnal data can be added to an ICMP message, traditionnaly used in B<NP_ICMPv4_TYPE_ECHO_REQUEST>.
+=item B<nextLayer>
 
 =back
 
@@ -401,6 +357,32 @@ Additionnal data can be added to an ICMP message, traditionnaly used in B<NP_ICM
 
 =item B<new>
 
+=item B<new> (hash)
+
+Object constructor. You can pass attributes that will overwrite default ones. See B<SYNOPSIS> for default values.
+
+=item B<computeChecksums>
+
+Computes the ICMPv4 checksum.
+
+=item B<getKey>
+
+=item B<getKeyReverse>
+
+These two methods are basically used to increase the speed when using B<recv> method from B<Net::Frame::Simple>. Usually, you write them when you need to write B<match> method.
+
+=item B<match> (Net::Frame::ICMPv4 object)
+
+This method is mostly used internally. You pass a B<Net::Frame::ICMPv4> layer as a parameter, and it returns true if this is a response corresponding for the request, or returns false if not.
+
+=back
+
+The following are inherited methods. Some of them may be overriden in this layer, and some others may not be meaningful in this layer. See B<Net::Frame::Layer> for more information.
+
+=over 4
+
+=item B<layer>
+
 =item B<computeLengths>
 
 =item B<computeChecksums>
@@ -409,85 +391,97 @@ Additionnal data can be added to an ICMP message, traditionnaly used in B<NP_ICM
 
 =item B<unpack>
 
-=item B<getLength>
-
-=item B<getKey>
-
-=item B<getKeyReverse>
-
-=item B<match>
-
 =item B<encapsulate>
 
+=item B<getLength>
+
+=item B<getPayloadLength>
+
 =item B<print>
+
+=item B<dump>
 
 =back
 
 =head1 CONSTANTS
 
-Load them: use Net::Packet::Consts qw(:icmpv4);
+Load them: use Net::Frame::ICMPv4 qw(:consts);
 
 =over 4
 
-=item B<NP_ICMPv4_CODE_ZERO>
+=item B<NF_ICMPv4_CODE_ZERO>
 
 ICMP code zero, used by various ICMP messages.
 
-=item B<NP_ICMPv4_TYPE_DESTINATION_UNREACHABLE>
+=item B<NF_ICMPv4_TYPE_DESTUNREACH>
 
-=item B<NP_ICMPv4_CODE_NETWORK>
+=item B<NF_ICMPv4_CODE_NETWORK>
 
-=item B<NP_ICMPv4_CODE_HOST>
+=item B<NF_ICMPv4_CODE_HOST>
 
-=item B<NP_ICMPv4_CODE_PROTOCOL>
+=item B<NF_ICMPv4_CODE_PROTOCOL>
 
-=item B<NP_ICMPv4_CODE_PORT>
+=item B<NF_ICMPv4_CODE_PORT>
 
-=item B<NP_ICMPv4_CODE_FRAGMENTATION_NEEDED>
+=item B<NF_ICMPv4_CODE_FRAGMENTATION_NEEDED>
 
-=item B<NP_ICMPv4_CODE_SOURCE_ROUTE_FAILED>
+=item B<NF_ICMPv4_CODE_SOURCE_ROUTE_FAILED>
 
 Destination unreachable type, with possible code numbers.
 
-=item B<NP_ICMPv4_TYPE_REDIRECT>
+=item B<NF_ICMPv4_TYPE_REDIRECT>
 
-=item B<NP_ICMPv4_CODE_FOR_NETWORK>
+=item B<NF_ICMPv4_CODE_FOR_NETWORK>
 
-=item B<NP_ICMPv4_CODE_FOR_HOST>
+=item B<NF_ICMPv4_CODE_FOR_HOST>
 
-=item B<NP_ICMPv4_CODE_FOR_TOS_AND_NETWORK>
+=item B<NF_ICMPv4_CODE_FOR_TOS_AND_NETWORK>
 
-=item B<NP_ICMPv4_CODE_FOR_TOS_AND_HOST>
+=item B<NF_ICMPv4_CODE_FOR_TOS_AND_HOST>
 
 Redirect type message, with possible code numbers.
 
-=item B<NP_ICMPv4_TYPE_TIME_EXCEEDED>
+=item B<NF_ICMPv4_TYPE_TIMEEXCEED>
 
-=item B<NP_ICMPv4_CODE_TTL_IN_TRANSIT>
+=item B<NF_ICMPv4_CODE_TTL_IN_TRANSIT>
 
-=item B<NP_ICMPv4_CODE_FRAGMENT_REASSEMBLY>
+=item B<NF_ICMPv4_CODE_FRAGMENT_REASSEMBLY>
 
 Time exceeded message, with possible code numbers.
 
-=item B<NP_ICMPv4_TYPE_ECHO_REQUEST>
+=item B<NF_ICMPv4_TYPE_PARAMETERPROBLEM>
 
-=item B<NP_ICMPv4_TYPE_ECHO_REPLY>
+=item B<NF_ICMPv4_CODE_POINTER>
 
-=item B<NP_ICMPv4_TYPE_TIMESTAMP_REQUEST>
+Parameter problem, with possible code numbers.
 
-=item B<NP_ICMPv4_TYPE_TIMESTAMP_REPLY>
+=item B<NF_ICMPv4_TYPE_SOURCEQUENCH>
 
-=item B<NP_ICMPv4_TYPE_INFORMATION_REQUEST>
+Source quench type.
 
-=item B<NP_ICMPv4_TYPE_INFORMATION_REPLY>
+=item B<NF_ICMPv4_TYPE_ECHO_REQUEST>
 
-=item B<NP_ICMPv4_TYPE_ADDRESS_MASK_REQUEST>
+=item B<NF_ICMPv4_TYPE_ECHO_REPLY>
 
-=item B<NP_ICMPv4_TYPE_ADDRESS_MASK_REPLY>
+=item B<NF_ICMPv4_TYPE_TIMESTAMP_REQUEST>
+
+=item B<NF_ICMPv4_TYPE_TIMESTAMP_REPLY>
+
+=item B<NF_ICMPv4_TYPE_INFORMATION_REQUEST>
+
+=item B<NF_ICMPv4_TYPE_INFORMATION_REPLY>
+
+=item B<NF_ICMPv4_TYPE_ADDRESS_MASK_REQUEST>
+
+=item B<NF_ICMPv4_TYPE_ADDRESS_MASK_REPLY>
 
 Other request/reply ICMP messages types.
 
 =back
+
+=head1 SEE ALSO
+
+L<Net::Frame::Layer>
 
 =head1 AUTHOR
 

@@ -7,10 +7,10 @@ use Net::Frame::IPv4 qw(:consts);
 use Net::Frame::ICMPv4 qw(:consts);
 use Net::Frame::ICMPv4::Information;
 
-my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
+my $ip = Net::Frame::IPv4->new(protocol => NF_IPv4_PROTOCOL_ICMPv4);
 
 my $icmp = Net::Frame::ICMPv4->new(
-   type     => NP_ICMPv4_TYPE_INFORMATION_REQUEST,
+   type     => NF_ICMPv4_TYPE_INFORMATION_REQUEST,
    icmpType => Net::Frame::ICMPv4::Information->new(payload => 'test'),
 );
 

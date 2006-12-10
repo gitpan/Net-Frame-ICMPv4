@@ -3,6 +3,7 @@ examples/icmp-addressmask.pl
 examples/icmp-echo.pl
 examples/icmp-echo-send-recv.pl
 examples/icmp-information.pl
+examples/icmp-requests.pl
 examples/icmp-timestamp.pl
 lib/Net/Frame/ICMPv4/AddressMask.pm
 lib/Net/Frame/ICMPv4/DestUnreach.pm

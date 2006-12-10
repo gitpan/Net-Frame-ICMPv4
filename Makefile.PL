@@ -1,7 +1,9 @@
 #
-# $Id: Makefile.PL,v 1.3 2006/12/03 16:54:18 gomor Exp $
+# $Id: Makefile.PL,v 1.4 2006/12/09 19:10:05 gomor Exp $
 #
 use ExtUtils::MakeMaker;
+
+require v5.6.1;
 
 WriteMakefile(
    NAME          => 'Net::Frame::ICMPv4',

@@ -7,7 +7,7 @@ use Net::Frame::IPv4 qw(:consts);
 use Net::Frame::ICMPv4;
 use Net::Frame::ICMPv4::Echo;
 
-my $ip = Net::Frame::IPv4->new(protocol => NP_IPv4_PROTOCOL_ICMPv4);
+my $ip = Net::Frame::IPv4->new(protocol => NF_IPv4_PROTOCOL_ICMPv4);
 
 my $icmp = Net::Frame::ICMPv4->new(
    icmpType => Net::Frame::ICMPv4::Echo->new(payload => 'test'),
