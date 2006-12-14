@@ -1,13 +1,13 @@
 #
-# $Id: ICMPv4.pm,v 1.10 2006/12/10 16:24:29 gomor Exp $
+# $Id: ICMPv4.pm,v 1.11 2006/12/14 17:37:01 gomor Exp $
 #
 package Net::Frame::ICMPv4;
 use strict;
 use warnings;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
-use Net::Frame::Layer qw(:consts);
+use Net::Frame::Layer qw(:consts :subs);
 require Exporter;
 our @ISA = qw(Net::Frame::Layer Exporter);
 
@@ -88,7 +88,6 @@ __PACKAGE__->cgBuildAccessorsScalar(\@AS);
 #no strict 'vars';
 
 use Carp;
-use Net::Frame::Utils qw(inetChecksum);
 require Net::Frame::ICMPv4::AddressMask;
 require Net::Frame::ICMPv4::DestUnreach;
 require Net::Frame::ICMPv4::Echo;

@@ -1,11 +1,11 @@
 #
-# $Id: Information.pm,v 1.7 2006/12/10 16:47:24 gomor Exp $
+# $Id: Information.pm,v 1.8 2006/12/14 17:37:32 gomor Exp $
 #
 package Net::Frame::ICMPv4::Information;
 use strict;
 use warnings;
 
-use Net::Frame::Layer qw(:consts);
+use Net::Frame::Layer qw(:consts :subs);
 our @ISA = qw(Net::Frame::Layer);
 
 our @AS = qw(
@@ -18,7 +18,6 @@ __PACKAGE__->cgBuildAccessorsScalar(\@AS);
 #no strict 'vars';
 
 use Carp;
-use Net::Frame::Utils qw(getRandom16bitsInt);
 
 sub new {
    shift->SUPER::new(
